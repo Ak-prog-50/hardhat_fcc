@@ -51,7 +51,7 @@ module.exports = {
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
     truffle: {
-      url: "http://127.0.0.1:24012/",
+      url: "http://127.0.0.1:24012/rpc",
     },
   },
   gasReporter: {
