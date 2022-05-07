@@ -29,6 +29,9 @@ module.exports = {
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
+    truffle: {
+      url: "http://127.0.0.1:24012/"
+    }
   },
   gasReporter: {
     enabled: process.env.REPORT_GAS !== undefined,
