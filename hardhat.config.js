@@ -22,7 +22,28 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
  * @type import('hardhat/config').HardhatUserConfig
  */
 module.exports = {
-  solidity: "0.8.4",
+  solidity: {
+    compilers: [
+      {
+        version: "0.8.7",
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 200,
+          },
+        },
+      },
+      {
+        version: "0.6.8",
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 200,
+          },
+        },
+      },
+    ],
+  },
   networks: {
     ropsten: {
       url: process.env.ROPSTEN_URL || "",
@@ -30,8 +51,8 @@ module.exports = {
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
     truffle: {
-      url: "http://127.0.0.1:24012/"
-    }
+      url: "http://127.0.0.1:24012/",
+    },
   },
   gasReporter: {
     enabled: process.env.REPORT_GAS !== undefined,
