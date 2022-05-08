@@ -45,16 +45,11 @@ module.exports = {
     ],
   },
   networks: {
-    hardhat: {
-      forking: {
-        url: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_KEY}`,
-      }
-    },
-    localhost: {
-      forking: {
-        url: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_KEY}`,
-      }
-    },
+    // hardhat: {
+    //   forking: {
+    //     url: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_KEY}`,
+    //   }
+    // },
     ropsten: {
       url: process.env.ROPSTEN_URL || "",
       accounts:
