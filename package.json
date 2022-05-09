@@ -23,6 +23,7 @@
     "solidity-coverage": "^0.7.21"
   },
   "dependencies": {
-    "@chainlink/contracts": "^0.4.0"
+    "@chainlink/contracts": "^0.4.0",
+    "@openzeppelin/contracts": "^4.6.0"
   }
 }
