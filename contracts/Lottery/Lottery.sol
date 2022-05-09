@@ -24,7 +24,7 @@ contract Lottery {
         (,int256 answer,,,) = priceFeed.latestRoundData();  //returns ETH/USD rate in 8 digits
         console.log(uint(answer), "answer");
 
-        uint256 oneUSDInWei = 10**18 / (uint(answer) / 10**8); //answers decimals are ignored
+        uint256 oneUSDInWei = 10**18 / (uint(answer) / 10**8); //notes: answers decimals are ignored. need to recheck how to do rounding better 
         console.log(oneUSDInWei, "oneUsdInWEi");
 
         uint256 entranceFeeInWei = oneUSDInWei * entranceFeeInUsd;
