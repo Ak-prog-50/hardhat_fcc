@@ -22,20 +22,20 @@ contract Lottery {
         priceFeed = AggregatorV3Interface(_priceFeed);
     }
 
-    function getEntranceFee() public view returns(int256){
+    function getEntranceFee() public view returns(uint256){
         (,int256 answer,,,) = priceFeed.latestRoundData();  //returns ETH/USD rate in 8 digits
         console.log(uint(answer), "answer");
 
-        int256 answerWithDecimals = int256(answer) / (10**8);
+        int256 answerWithDecimals = answer / (10**8);
         console.log(uint(answerWithDecimals), "answerWithDeci");
 
-        int256 oneUSDInWei = int(10**18) / (int(answerWithDecimals)); //notes: answers decimals are ignored. need to recheck how to do rounding better 
+        int256 oneUSDInWei = 10**18 / answerWithDecimals; //notes: answers decimals are ignored. need to recheck how to do rounding better 
         console.log(uint(oneUSDInWei), "oneUsdInWEi");
 
         int256 entranceFeeInWei = oneUSDInWei * entranceFeeInUsd;
         console.log(uint(entranceFeeInWei), "entranceFeeInwei");
 
-        return entranceFeeInWei;
+        return uint(entranceFeeInWei);
     }
 
     function enter() public payable{
@@ -43,7 +43,7 @@ contract Lottery {
         // what amount has been deposited
 
         // check if the amount is enough
-        require(msg.value >= entranceFee, "You have to deposit at least 50 USD");
+        require(msg.value >= getEntranceFee(), "You have to deposit at least 50 USD");
         
         participants.push(msg.sender);
         addressToAmountDeposited[msg.sender] += msg.value;
