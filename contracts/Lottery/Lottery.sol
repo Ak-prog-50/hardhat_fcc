@@ -6,6 +6,8 @@ import "@chainlink/contracts/src/v0.6/vendor/SafeMathChainlink.sol";
 import "hardhat/console.sol";
 
 contract Lottery {
+    // using SafeMathChainlink for uint256; //notes: Using safe math is only for uints. Need to use a library like abdk before pushing to production to check for overflow errros. (divi func in ABDK)
+
     address public owner;
     address[] public participants;
     uint256 public entranceFee;
@@ -20,15 +22,18 @@ contract Lottery {
         priceFeed = AggregatorV3Interface(_priceFeed);
     }
 
-    function getEntranceFee() public view returns(uint256){
+    function getEntranceFee() public view returns(int256){
         (,int256 answer,,,) = priceFeed.latestRoundData();  //returns ETH/USD rate in 8 digits
         console.log(uint(answer), "answer");
 
-        uint256 oneUSDInWei = 10**18 / (uint(answer) / 10**8); //notes: answers decimals are ignored. need to recheck how to do rounding better 
-        console.log(oneUSDInWei, "oneUsdInWEi");
+        int256 answerWithDecimals = int256(answer) / (10**8);
+        console.log(uint(answerWithDecimals), "answerWithDeci");
 
-        uint256 entranceFeeInWei = oneUSDInWei * entranceFeeInUsd;
-        console.log(entranceFeeInWei, "entranceFeeInwei");
+        int256 oneUSDInWei = int(10**18) / (int(answerWithDecimals)); //notes: answers decimals are ignored. need to recheck how to do rounding better 
+        console.log(uint(oneUSDInWei), "oneUsdInWEi");
+
+        int256 entranceFeeInWei = oneUSDInWei * entranceFeeInUsd;
+        console.log(uint(entranceFeeInWei), "entranceFeeInwei");
 
         return entranceFeeInWei;
     }

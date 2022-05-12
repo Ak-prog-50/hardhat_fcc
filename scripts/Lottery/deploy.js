@@ -3,7 +3,7 @@ const { getPriceFeedAddr } = require("../../utils/helpers")
 
 const main = async () => {
     const Lottery = await ethers.getContractFactory("Lottery");
-    const lottery = await Lottery.deploy(getPriceFeedAddr());
+    const lottery = await Lottery.deploy(getPriceFeedAddr(), 50);
     await lottery.deployed();
     console.log("Lottery deployed to:", lottery.address);
     return lottery
