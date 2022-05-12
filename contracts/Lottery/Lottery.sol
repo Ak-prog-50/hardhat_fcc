@@ -13,6 +13,12 @@ contract Lottery {
     uint256 public entranceFee;
     uint8 entranceFeeInUsd;
 
+    enum lottery_state {
+        STARTED,
+        ENDED
+    }
+
+    
     AggregatorV3Interface internal priceFeed;
     mapping (address => uint256) internal addressToAmountDeposited;
 
@@ -29,7 +35,7 @@ contract Lottery {
         int256 answerWithDecimals = answer / (10**8);
         console.log(uint(answerWithDecimals), "answerWithDeci");
 
-        int256 oneUSDInWei = 10**18 / answerWithDecimals; //notes: answers decimals are ignored. need to recheck how to do rounding better 
+        int256 oneUSDInWei = 1 ether / answerWithDecimals; //notes: answers decimals are ignored. need to recheck how to do rounding better 
         console.log(uint(oneUSDInWei), "oneUsdInWEi");
 
         int256 entranceFeeInWei = oneUSDInWei * entranceFeeInUsd;
