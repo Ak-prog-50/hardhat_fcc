@@ -2,8 +2,8 @@
 pragma solidity >=0.6.0 <0.9.0;
 
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
-import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
-import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
+import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol"; //* vrf coordinator contract interface
+import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol"; //* base contract for any VRF consumer
 import "hardhat/console.sol";
 
 contract Lottery is VRFConsumerBaseV2 {
@@ -18,10 +18,10 @@ contract Lottery is VRFConsumerBaseV2 {
     VRFCoordinatorV2Interface COORDINATOR; // default visibility is internal in vars.
 
     // These could be parameterized as well.
-    bytes32 keyHash = 0xd89b2bf150e3b9e13446986e571fb9cab24b13cea0a43ea20a6049a85cc807cc;
-    uint32 callbackGasLimit = 100000;
-    uint16 requestConfirmations = 3;
-    uint32 numWords =  1;
+    bytes32 keyHash = 0xd89b2bf150e3b9e13446986e571fb9cab24b13cea0a43ea20a6049a85cc807cc;  //* gas lane key hash (check docs for more info)
+    uint32 callbackGasLimit = 100000; //* gas limit when VRF callback rawFulfillRandomWords func in VRFConsumerBaseV2.
+    uint16 requestConfirmations = 3; //* number of confirmations VRF node waits for before fulfilling request
+    uint32 numWords =  1; //* number of words(uint256 values) in the random word request
     
 
     enum LotteryState {
@@ -44,7 +44,7 @@ contract Lottery is VRFConsumerBaseV2 {
         owner = msg.sender;
         entranceFeeInUsd = _entranceFeeInUsd;
         priceFeed = AggregatorV3Interface(_priceFeed);
-        lotteryState = LotteryState.CLOSED;
+        lotteryState = LotteryState.CLOSED; //* default lottery state is closed
         subscriptionId = _subscriptionId;
         COORDINATOR = VRFCoordinatorV2Interface(_vrfCoordinator);
     }
@@ -62,13 +62,13 @@ contract Lottery is VRFConsumerBaseV2 {
     }
 
     function getEntranceFee() public view returns(uint256){
-        (,int256 answer,,,) = priceFeed.latestRoundData();  //returns ETH/USD rate in 8 digits
+        (,int256 answer,,,) = priceFeed.latestRoundData();  // * returns ETH/USD rate with 8 decimal places as answer
         console.log(uint(answer), "answer");
 
-        int256 answerWithDecimals = answer / (10**8);
-        console.log(uint(answerWithDecimals), "answerWithDeci");
+        int256 roundedAnswer = answer / (10**8); // * 245678999700 => rounded as 2456
+        console.log(uint(roundedAnswer), "roundedAnswer");
 
-        int256 oneUSDInWei = 1 ether / answerWithDecimals; //notes: answers decimals are ignored. need to recheck how to do rounding better 
+        int256 oneUSDInWei = 1 ether / roundedAnswer; //notes: answers decimals are ignored. need to recheck how to do rounding better 
         console.log(uint(oneUSDInWei), "oneUsdInWEi");
 
         int256 entranceFeeInWei = oneUSDInWei * entranceFeeInUsd;
@@ -97,6 +97,7 @@ contract Lottery is VRFConsumerBaseV2 {
         require(participants.length > 0, "No participants");
 
         lotteryState = LotteryState.SELECTING_WINNER;
+        // * requestRandomWords() function returns a uint256 value
         requestId = COORDINATOR.requestRandomWords(
             keyHash,
             subscriptionId,
@@ -107,7 +108,7 @@ contract Lottery is VRFConsumerBaseV2 {
     }
 
     function fulfillRandomWords (uint256, uint256[] calldata _randomWords) internal override {
-        // require statements
+        // * this function is for the callback from the VRF node. Can be called only from the VRF node. (check docs for more info. (request response cycle))
         require(lotteryState == LotteryState.SELECTING_WINNER, "Lottery is not in the SELECTING_WINNER state");
         require(_randomWords.length > 0, "No random values");
         require(participants.length > 0, "No participants");
