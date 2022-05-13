@@ -6,13 +6,17 @@ import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
 import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
 import "hardhat/console.sol";
 
-contract Lottery {
+contract Lottery is VRFConsumerBaseV2 {
     // using SafeMathChainlink for uint256; //notes: Using safe math is only for uints. Need to use a library like abdk before pushing to production to check for overflow errros. (divi func in ABDK)
 
     address public owner;
     address[] public participants;
     uint256 public entranceFee;
     uint8 entranceFeeInUsd;
+    VRFCoordinatorV2Interface COORDINATOR; // default visibility is internal in vars.
+
+    // Rinkeby coordinator.
+    address vrfCoordinator = 0x6168499c0cFfCaCD319c818142124B7A15E857ab;
 
     enum LotteryState {
         OPEN,
@@ -25,7 +29,8 @@ contract Lottery {
     AggregatorV3Interface internal priceFeed;
     mapping (address => uint256) internal addressToAmountDeposited;
 
-    constructor(address _priceFeed, uint8 _entranceFeeInUsd) public{
+    constructor(address _priceFeed, uint8 _entranceFeeInUsd) public VRFConsumerBaseV2(vrfCoordinator) {
+        COORDINATOR = VRFCoordinatorV2Interface(vrfCoordinator);
         owner = msg.sender;
         entranceFeeInUsd = _entranceFeeInUsd;
         priceFeed = AggregatorV3Interface(_priceFeed);
