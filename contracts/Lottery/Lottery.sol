@@ -33,7 +33,7 @@ contract Lottery is VRFConsumerBaseV2 {
     LotteryState public lotteryState;
     
     AggregatorV3Interface internal priceFeed;
-    mapping (address => uint256) internal addressToAmountDeposited;
+    mapping (address => uint256) public addressToAmountDeposited;
 
     constructor(
         address _priceFeed, 
