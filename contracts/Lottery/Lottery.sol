@@ -82,12 +82,12 @@ contract Lottery is VRFConsumerBaseV2 {
         addressToAmountDeposited[msg.sender] += msg.value;
     }
 
-    function startLottery() public onlyOwner {
+    function startLottery() external onlyOwner {
         require(lotteryState == LotteryState.CLOSED, "Lottery is already opened");
         lotteryState = LotteryState.OPEN;
     }
 
-    function endLottery() public onlyOwner checkOpened{
+    function endLottery() external onlyOwner checkOpened{
         lotteryState = LotteryState.SELECTING_WINNER;
 
     }
