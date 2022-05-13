@@ -13,11 +13,13 @@ contract Lottery {
     uint256 public entranceFee;
     uint8 entranceFeeInUsd;
 
-    enum lottery_state {
-        STARTED,
-        ENDED
+    enum LotteryState {
+        OPEN,
+        CLOSED,
+        SELECTING_WINNER
     }
 
+    LotteryState public lotteryState;
     
     AggregatorV3Interface internal priceFeed;
     mapping (address => uint256) internal addressToAmountDeposited;
@@ -26,6 +28,19 @@ contract Lottery {
         owner = msg.sender;
         entranceFeeInUsd = _entranceFeeInUsd;
         priceFeed = AggregatorV3Interface(_priceFeed);
+        lotteryState = LotteryState.CLOSED;
+    }
+
+    // onlyOwner modifier
+    modifier onlyOwner {
+        require(msg.sender == owner, "You are not the owner");
+        _;
+    }
+
+    // checkOpened modifier
+    modifier checkOpened {
+        require(lotteryState == LotteryState.OPEN, "Lottery is not open");
+        _;
     }
 
     function getEntranceFee() public view returns(uint256){
@@ -44,7 +59,7 @@ contract Lottery {
         return uint(entranceFeeInWei);
     }
 
-    function enter() public payable{
+    function enter() public payable checkOpened{
         // know who has enterred
         // what amount has been deposited
 
@@ -55,5 +70,14 @@ contract Lottery {
         addressToAmountDeposited[msg.sender] += msg.value;
     }
 
+    function startLottery() public onlyOwner {
+        require(lotteryState == LotteryState.CLOSED, "Lottery is already opened");
+        lotteryState = LotteryState.OPEN;
+    }
+
+    function endLottery() public onlyOwner checkOpened{
+        lotteryState = LotteryState.SELECTING_WINNER;
+
+    }
 
 }
