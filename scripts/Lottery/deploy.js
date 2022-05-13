@@ -1,9 +1,9 @@
-const { ethers } = require("hardhat")
-const { getPriceFeedAddr } = require("../../utils/helpers")
+const { ethers } = require("hardhat");
+const lotteryArgs = require("./contractArgs");
 
 const main = async () => {
     const Lottery = await ethers.getContractFactory("Lottery");
-    const lottery = await Lottery.deploy(getPriceFeedAddr(), 50);
+    const lottery = await Lottery.deploy(...lotteryArgs);
     await lottery.deployed();
     console.log("Lottery deployed to:", lottery.address);
     return lottery
