@@ -46,9 +46,9 @@ module.exports = {
   },
   networks: {
     hardhat: {
-      forking: {
-        url: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_KEY}`,
-      }
+      // forking: {
+      //   url: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_KEY}`,
+      // }
     },
     ropsten: {
       url: process.env.ROPSTEN_URL || "",
