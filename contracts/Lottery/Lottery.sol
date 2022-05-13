@@ -11,12 +11,17 @@ contract Lottery is VRFConsumerBaseV2 {
 
     address public owner;
     address[] public participants;
-    uint256 public entranceFee;
-    uint8 entranceFeeInUsd;
+    uint8 public entranceFeeInUsd;
+    uint256 public requestId;
+    uint64 subscriptionId;
     VRFCoordinatorV2Interface COORDINATOR; // default visibility is internal in vars.
 
-    // Rinkeby coordinator.
-    address vrfCoordinator = 0x6168499c0cFfCaCD319c818142124B7A15E857ab;
+    // These could be parameterized as well.
+    bytes32 keyHash = 0xd89b2bf150e3b9e13446986e571fb9cab24b13cea0a43ea20a6049a85cc807cc;
+    uint32 callbackGasLimit = 100000;
+    uint16 requestConfirmations = 3;
+    uint32 numWords =  1;
+    
 
     enum LotteryState {
         OPEN,
@@ -29,12 +34,13 @@ contract Lottery is VRFConsumerBaseV2 {
     AggregatorV3Interface internal priceFeed;
     mapping (address => uint256) internal addressToAmountDeposited;
 
-    constructor(address _priceFeed, uint8 _entranceFeeInUsd) public VRFConsumerBaseV2(vrfCoordinator) {
-        COORDINATOR = VRFCoordinatorV2Interface(vrfCoordinator);
+    constructor(address _priceFeed, address _vrfCoordinator, uint8 _entranceFeeInUsd, uint64 _subscriptionId) public VRFConsumerBaseV2(_vrfCoordinator) {
+        COORDINATOR = VRFCoordinatorV2Interface(_vrfCoordinator);
         owner = msg.sender;
         entranceFeeInUsd = _entranceFeeInUsd;
         priceFeed = AggregatorV3Interface(_priceFeed);
         lotteryState = LotteryState.CLOSED;
+        subscriptionId = _subscriptionId;
     }
 
     // onlyOwner modifier
