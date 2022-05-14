@@ -20,7 +20,7 @@ const deployMockPriceFeed = async() => {
 }
 
 const deployMockCoordinator = async() => {
-    const Coordinator = await ethers.getContractFactory("VRFCoordinatorV2TestHelper")
+    const Coordinator = await ethers.getContractFactory("MockVRFCoordinatorV2")
     const coordinator = await Coordinator.deploy(linkTokenAddr, ethers.constants.AddressZero, linkEthFeed)
     await coordinator.deployed()
     console.log("Coordinator deployed to:", coordinator.address);
