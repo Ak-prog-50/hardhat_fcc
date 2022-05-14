@@ -63,16 +63,16 @@ contract Lottery is VRFConsumerBaseV2 {
 
     function getEntranceFee() public view returns(uint256){
         (,int256 answer,,,) = priceFeed.latestRoundData();  // * returns ETH/USD rate with 8 decimal places as answer
-        console.log(uint(answer), "answer");
+        // console.log(uint(answer), "answer");
 
         int256 roundedAnswer = answer / (10**8); // * 245678999700 => rounded as 2456
-        console.log(uint(roundedAnswer), "roundedAnswer");
+        // console.log(uint(roundedAnswer), "roundedAnswer");
 
         int256 oneUSDInWei = 1 ether / roundedAnswer; //notes: answers decimals are ignored. need to recheck how to do rounding better 
-        console.log(uint(oneUSDInWei), "oneUsdInWEi");
+        // console.log(uint(oneUSDInWei), "oneUsdInWEi");
 
         int256 entranceFeeInWei = oneUSDInWei * entranceFeeInUsd;
-        console.log(uint(entranceFeeInWei), "entranceFeeInwei");
+        // console.log(uint(entranceFeeInWei), "entranceFeeInwei");
 
         return uint(entranceFeeInWei);
     }
