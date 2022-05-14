@@ -13,7 +13,6 @@ contract LinkToken is ITypeAndVersion, LinkERC20, ERC677 {
 
   constructor()
     ERC20(NAME, SYMBOL)
-    public
   {
     _onCreate();
   }
