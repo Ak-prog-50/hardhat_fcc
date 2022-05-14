@@ -1,10 +1,11 @@
-const { getPriceFeedAddr, getCoordinatorAddr } = require("../../utils/helpers")
+const { getPriceFeedAddr, getCoordinatorAddr, getLinkAddr } = require("../../utils/helpers")
 
 const lotteryArgs = [
     getPriceFeedAddr(),
     getCoordinatorAddr(),
     50,
-    4262
+    0, // * This should be zero for local development and 4262 for rinkeby
+    getLinkAddr(),
 ]
 
 module.exports = lotteryArgs;

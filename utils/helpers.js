@@ -7,8 +7,10 @@ const mockV3Args = {
 }
 const priceFeedAddr = "0x8A753747A1Fa494EC906cE90E9f37563A8AF630e" // Rinkeby Price Feed
 const priceFeedMainnet = "0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419" // Mainnet Price Feed
+const coordinatorAddr = "0x6168499c0cFfCaCD319c818142124B7A15E857ab" // Rinkeby Coordinator
+const linkTokenAddr = "0x01BE23585060835E02B77ef475b0Cc51aA1e0709"
 
-const deployMocks = async() => {
+const deployMockPriceFeed = async() => {
     const MockV3 = await ethers.getContractFactory("MockV3Aggregator")
     const mockV3 = await MockV3.deploy(mockV3Args.decimals, mockV3Args.initialAnswer)
     await mockV3.deployed()
@@ -16,11 +18,27 @@ const deployMocks = async() => {
     return mockV3.address
 }
 
+const deployMockCoordinator = async() => {
+    const Coordinator = await ethers.getContractFactory("VRFCoordinatorV2Mock")
+    const coordinator = await Coordinator.deploy(10000, 100)
+    await coordinator.deployed()
+    console.log("Coordinator deployed to:", coordinator.address);
+    return coordinator.address
+}
+
+const deployMockLink = async() => {
+    const MockLink = await ethers.getContractFactory("LinkToken")
+    const mockLink = await MockLink.deploy()
+    await mockLink.deployed()
+    console.log("MockLink deployed to:", mockLink.address);
+    return mockLink.address
+}
+
 
 const getPriceFeedAddr = async() => {
     if (local_development.includes(network.name) && !network.config.forking) {
         console.log("\tIn a Local Network :", network.name)
-        return await deployMocks()
+        return await deployMockPriceFeed()
     }
     if (network.config.forking) {
         console.log("\tIn the Mainnet Fork :", network.config.forking.url)
@@ -30,7 +48,27 @@ const getPriceFeedAddr = async() => {
     return ethers.utils.getAddress(priceFeedAddr)
 }
 
+const getCoordinatorAddr = async() => {
+    if (local_development.includes(network.name) && !network.config.forking) {
+        console.log("\tIn a Local Network :", network.name)
+        return await deployMockCoordinator()
+    }
+    console.log("\tIn a remote Network :", network.name)
+    return ethers.utils.getAddress(coordinatorAddr)
+}
+
+const getLinkAddr = async() => {
+    if (local_development.includes(network.name) && !network.config.forking) {
+        console.log("\tIn a Local Network :", network.name)
+        return await deployMockLink()
+    }
+    console.log("\tIn a remote Network :", network.name)
+    return ethers.utils.getAddress(linkTokenAddr)
+}
+
 module.exports = {
     getPriceFeedAddr,
-    deployMocks
+    deployMockPriceFeed,
+    getCoordinatorAddr,
+    getLinkAddr,
 }
