@@ -4,7 +4,6 @@ pragma solidity >=0.6.0 <0.9.0;
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol"; //* vrf coordinator contract interface
 import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol"; //* base contract for any VRF consumer
-import "@chainlink/contracts/src/v0.8/interfaces/LinkTokenInterface.sol";
 import "hardhat/console.sol";
 
 contract Lottery is VRFConsumerBaseV2 {
@@ -17,7 +16,6 @@ contract Lottery is VRFConsumerBaseV2 {
     uint256 public requestId;
     uint64 subscriptionId;
     VRFCoordinatorV2Interface COORDINATOR; // default visibility is internal in vars.
-    LinkTokenInterface LINKTOKEN;
 
     // These could be parameterized as well.
     bytes32 keyHash = 0xd89b2bf150e3b9e13446986e571fb9cab24b13cea0a43ea20a6049a85cc807cc;  //* gas lane key hash (check docs for more info)
@@ -41,8 +39,7 @@ contract Lottery is VRFConsumerBaseV2 {
         address _priceFeed, 
         address _vrfCoordinator, 
         int8 _entranceFeeInUsd, 
-        uint64 _subscriptionId,
-        address _linkToken    
+        uint64 _subscriptionId  
     ) VRFConsumerBaseV2(_vrfCoordinator) {
         owner = msg.sender;
         entranceFeeInUsd = _entranceFeeInUsd;
@@ -50,7 +47,6 @@ contract Lottery is VRFConsumerBaseV2 {
         lotteryState = LotteryState.CLOSED; //* default lottery state is closed
         subscriptionId = _subscriptionId;
         COORDINATOR = VRFCoordinatorV2Interface(_vrfCoordinator);
-        LINKTOKEN = LinkTokenInterface(_linkToken);
         if (_subscriptionId == 0) {
             createNewSubscription();
         } 
